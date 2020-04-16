@@ -6,7 +6,6 @@ module.exports = {
 			[
 				{
 					user_id: 1,
-					status: 'accepted',
 					driver_id: 1,
 					createdAt: new Date(),
 					updatedAt: new Date()
