@@ -8,6 +8,10 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get('/', (req, res) => {
+	res.send("Welcome to fayzisme's api")
+})
+
 require("./routes/customer.routes")(app);
 require("./routes/driver.routes")(app);
 require("./routes/product.routes")(app);

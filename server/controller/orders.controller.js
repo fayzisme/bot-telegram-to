@@ -1,4 +1,4 @@
-const { Order, OrderItem } = require('../models');
+const { orders, order_items } = require('../models');
 
 // Create and Save a new Order
 exports.create = (req, res) => {
@@ -19,9 +19,9 @@ exports.create = (req, res) => {
   };
 
   // Save Order in the database
-  Order.create(req.body.data.attributes, {
+  orders.create(req.body.data.attributes, {
 		include: [{
-			model: OrderItem,
+			model: order_items,
 			as: 'order_detail',
 			allowNull: false
 		}]
@@ -36,17 +36,17 @@ exports.create = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Order."
+          err.message || "Some error occurred while creating the orders."
       });
     });
 };
 
 // Retrieve all Orders from the database.
 exports.findAll = (req, res) => {
-  Order.findAll({
+  orders.findAll({
 		include: [
 			{
-					model: OrderItem,
+					model: order_items,
 					as: 'order_detail',
 					attributes: {
 						exclude: ['id', 'order_id']
@@ -76,10 +76,10 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Order.findByPk(id, {
+  orders.findByPk(id, {
 		include: [
 			{
-					model: OrderItem,
+					model: order_items,
 					as: 'order_detail',
 					attributes: {
 						exclude: ['id', 'order_id']
@@ -108,7 +108,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  Order.update(req.body.data.attributes, {
+  orders.update(req.body.data.attributes, {
     where: { id: id }
   })
     .then(num => {
@@ -133,7 +133,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Order.destroy({
+  orders.destroy({
     where: { id: id }
   })
     .then(num => {

@@ -1,4 +1,4 @@
-const { Customer } = require('../models');
+const { customers } = require('../models');
 
 // Create and Save a new Customer
 exports.create = (req, res) => {
@@ -19,7 +19,7 @@ exports.create = (req, res) => {
   };
 
   // Save Customer in the database
-  Customer.create(customer)
+  customers.create(customer)
     .then(data => {
       res.send({
         message: "success retrieve data",
@@ -30,14 +30,14 @@ exports.create = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Customer."
+          err.message || "Some error occurred while creating the customers."
       });
     });
 };
 
 // Retrieve all Customer from the database.
 exports.findAll = (req, res) => {
-  Customer.findAll({
+  customers.findAll({
 		attributes: {
 			exclude: ['createdAt', 'updatedAt']
 		}
@@ -61,7 +61,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Customer.findOne({ where: { username: id } })
+  customers.findOne({ where: { username: id } })
     .then(data => {
       res.send({
         message: "success retrieve data",
@@ -79,7 +79,7 @@ exports.findOne = (req, res) => {
 // Update a Customer by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
-  Customer.update(req.body.data.attributes, {
+  customers.update(req.body.data.attributes, {
     where: { id: id }
   })
     .then(num => {
@@ -104,7 +104,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Customer.destroy({
+  customers.destroy({
     where: { id: id }
   })
     .then(num => {

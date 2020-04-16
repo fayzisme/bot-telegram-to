@@ -1,4 +1,4 @@
-const { OrderItem } = require('../models');
+const { order_items } = require('../models');
 
 // Create and Save a new OrderItem
 exports.create = (req, res) => {
@@ -16,7 +16,7 @@ exports.create = (req, res) => {
   };
 
   // Save OrderItem in the database
-  OrderItem.create(orderitem)
+  order_items.create(orderitem)
     .then(data => {
       res.send({
         message: "success retrieve data",
@@ -27,14 +27,14 @@ exports.create = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the OrderItem."
+          err.message || "Some error occurred while creating the order_items."
       });
     });
 };
 
 // Retrieve all OrderItems from the database.
 exports.findAll = (req, res) => {
-  OrderItem.findAll()
+  order_items.findAll()
     .then(data => {
       res.send({
         message: "success retrieve data",
@@ -54,7 +54,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  OrderItem.findByPk(id)
+  order_items.findByPk(id)
     .then(data => {
       res.send({
         message: "success retrieve data",
@@ -73,7 +73,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  OrderItem.update(req.body.data.attributes, {
+  order_items.update(req.body.data.attributes, {
     where: { id: id }
   })
     .then(num => {
@@ -98,7 +98,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  OrderItem.destroy({
+  order_items.destroy({
     where: { id: id }
   })
     .then(num => {

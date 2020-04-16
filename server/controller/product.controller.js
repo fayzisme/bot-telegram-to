@@ -1,4 +1,4 @@
-const { Product } = require('../models');
+const { products } = require('../models');
 
 // Create and Save a new Product
 exports.create = (req, res) => {
@@ -17,7 +17,7 @@ exports.create = (req, res) => {
   };
 
   // Save Product in the database
-  Product.create(product)
+  products.create(product)
     .then(data => {
       res.send({
         message: "success retrieve data",
@@ -28,14 +28,14 @@ exports.create = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Product."
+          err.message || "Some error occurred while creating the products."
       });
     });
 };
 
 // Retrieve all Products from the database.
 exports.findAll = (req, res) => {
-  Product.findAll({
+  products.findAll({
 		attributes: {
 			exclude: ['createdAt', 'updatedAt']
 		}
@@ -59,7 +59,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Product.findByPk(id, {
+  products.findByPk(id, {
 		attributes: {
 			exclude: ['createdAt', 'updatedAt']
 		}
@@ -82,7 +82,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  Product.update(req.body.data.attributes, {
+  products.update(req.body.data.attributes, {
     where: { id: id }
   })
     .then(num => {
@@ -107,7 +107,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Product.destroy({
+  products.destroy({
     where: { id: id }
   })
     .then(num => {

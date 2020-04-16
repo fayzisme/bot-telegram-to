@@ -1,4 +1,4 @@
-const { Driver } = require('../models');
+const { drivers } = require('../models');
 
 // Create and Save a new Driver
 exports.create = (req, res) => {
@@ -17,7 +17,7 @@ exports.create = (req, res) => {
   };
 
   // Save Driver in the database
-  Driver.create(driver)
+  drivers.create(driver)
     .then(data => {
       res.send({
         message: "success retrieve data",
@@ -28,14 +28,14 @@ exports.create = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Driver."
+          err.message || "Some error occurred while creating the drivers."
       });
     });
 };
 
 // Retrieve all Drivers from the database.
 exports.findAll = (req, res) => {
-  Driver.findAll({
+  drivers.findAll({
 		attributes: {
 			exclude: ['createdAt', 'updatedAt']
 		}
@@ -59,7 +59,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Driver.findByPk(id, {
+  drivers.findByPk(id, {
 		attributes: {
 			exclude: ['createdAt', 'updatedAt']
 		}
@@ -82,7 +82,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  Driver.update(req.body.data.attributes, {
+  drivers.update(req.body.data.attributes, {
     where: { id: id }
   })
     .then(num => {
@@ -107,7 +107,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Driver.destroy({
+  drivers.destroy({
     where: { id: id }
   })
     .then(num => {

@@ -1,7 +1,19 @@
 Telegram = require('node-telegram-bot-api')
-const token = '1062140707:AAENB3jn6xLjSsA1_lfSIBf86WnGp7QMUaE';
+require('dotenv').config();
+
+const token = process.env.TOKEN_BOT;
 const bot = new Telegram(token, { polling: true });
 
+
+bot.onText(/\/start/, (msg) => {
+    const chatId = msg.chat.id;
+    bot.sendMessage(chatId, `Selamat datang ${msg.from.first_name}`, {
+    "reply_markup": {
+        "keyboard": [["Panduan"], ["Deskripsi"]]
+        }
+    });
+            
+}); 
 
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
@@ -12,14 +24,10 @@ bot.on('message', (msg) => {
     else if(message.toLowerCase().includes("makasih")) {
         bot.sendMessage(chatId, "Sampai jumpa lagi dan Terimakasih")
     }
-});
-
-bot.onText(/\/start/, (msg) => {
-    const chatId = msg.chat.id;
-    bot.sendMessage(chatId, `Selamat datang ${msg.from.first_name}`, {
-    "reply_markup": {
-        "keyboard": [["Panduan"], ["Deskripsi"]]
-        }
-    });
-            
-});        
+    else if(message.toLowerCase().includes("deskripsi")){
+        bot.sendMessage(chatId, "Ini adalah bot sederhana order-online app")
+    }
+    else if(message.toLowerCase().includes("panduan")){
+        bot.sendMessage(chatId, `Berikut panduan commands bot:`)
+    }
+});       
