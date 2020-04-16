@@ -28,6 +28,11 @@ bot.on('message', (msg) => {
         bot.sendMessage(chatId, "Ini adalah bot sederhana order-online app")
     }
     else if(message.toLowerCase().includes("panduan")){
-        bot.sendMessage(chatId, `Berikut panduan commands bot:`)
+        bot.sendMessage(chatId, `
+        *Berikut panduan commands bot:*
+        ==============================
+        Untuk melihat product : [/product]
+        Untuk order product : [/order]
+        `, {parse_mode : "Markdown"})
     }
 });       
