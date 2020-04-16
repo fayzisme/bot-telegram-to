@@ -1,10 +1,11 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "tryout",
-    "host": "127.0.0.1",
+    "username": "865a8SvXWI",
+    "password": "LebrFYlqzS",
+    "database": "865a8SvXWI",
+    "host": "remotemysql.com",
     "dialect": "mysql",
+    "port": 3306,
     "operatorsAliases": false
   },
   "test": {
@@ -16,11 +17,12 @@
     "operatorsAliases": false
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "username": "865a8SvXWI",
+    "password": "LebrFYlqzS",
+    "database": "865a8SvXWI",
+    "host": "remotemysql.com",
     "dialect": "mysql",
+    "port": 3306,
     "operatorsAliases": false
   }
 }
