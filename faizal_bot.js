@@ -38,7 +38,7 @@ bot.on('message', (msg) => {
 }); 
 
 bot.onText(/\/product/, (msg) => {
-    axios.get(`http://localhost:8000/api/product`)
+    axios.get(`https://fayzisme-bot-telegram-to.glitch.me/api/product`)
     .then(response => {
         const data = response.data.data;
         console.log(response.data.data);
@@ -75,8 +75,28 @@ bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var message = msg.text.toString();
     if (message.toLowerCase().indexOf('(') === 0) {
-        const data = [];
-        console.log(msg.text.split(' '));
-        bot.sendMessage(chatId,"Hai");
+        const username = msg.from.username;
+        const [full_name, email, phone_number] = msg.text.split(') ').map(el => el.replace(/[^0-9a-zA-Z@. ]/g, ""))
+        console.log(full_name, username, email, phone_number);
+
+       axios.post(`https://fayzisme-bot-telegram-to.glitch.me/api/customers`, 
+        {
+           data: {
+            attributes: {
+                full_name: full_name,
+                phone_number: phone_number,
+                username: username,
+                email: email
+            }
+           } 
+        })
+        .then(response => {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+        bot.sendMessage(chatId,"Terimakasih data anda sudah terdaftar");
     }
 });
