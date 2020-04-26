@@ -3,6 +3,16 @@ require('dotenv').config();
 const axios = require("axios");
 const token = process.env.TOKEN_BOT;
 const bot = new Telegram(token, { polling: true });
+const midtransClient = require('midtrans-client');
+
+let snap = new midtransClient.Snap({
+    isProduction : false,
+    serverKey : 'SB-Mid-client-ZhQ_sgee_Ov6HPG4',
+    clientKey : 'SB-Mid-server-LUxIoxlOiqzEHbRW9HzYGXaP'
+});
+
+let chart = [];
+
 
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
@@ -33,9 +43,20 @@ bot.on('message', (msg) => {
         Untuk order product : [/order]
         `, {parse_mode : "Markdown"})
     }
+    else if(message.toLowerCase().includes("keranjang")){
+
+        bot.sendMessage(chatId, `wait`, {parse_mode : "Markdown"})
+    }
 }); 
 
 bot.onText(/\/product/, async (msg) => {
+    bot.sendMessage(msg.chat.id,'==============================================',
+    {
+    "reply_markup": {
+        "keyboard": [["Lihat Keranjang"], ["Checkout"]]
+        }
+    });
+
     try {
     const response = await axios.get(`https://fayzisme-bot-telegram-to.glitch.me/api/product`)
     const data = response.data.data;
@@ -60,6 +81,7 @@ bot.onText(/\/product/, async (msg) => {
                 },
             ],
         ],
+        // "keyboard": [["Lihat Keranjang"], ["Checkout"]]
     }, parse_mode:"Markdown"});
         });
     } 
@@ -68,8 +90,9 @@ bot.onText(/\/product/, async (msg) => {
     }
 });
 
-bot.on("callback_query", function onCallbackQuery(data) {
-    console.log(data);
+bot.on("callback_query", function onCallbackQuery(callbackData) {
+    chart.push(parseInt(callbackData.data));
+    console.log(chart);    
 });
 
 bot.onText(/\/order/, async (msg) => {
