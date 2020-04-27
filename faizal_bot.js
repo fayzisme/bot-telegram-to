@@ -4,6 +4,7 @@ const axios = require("axios");
 const token = process.env.TOKEN_BOT;
 const bot = new Telegram(token, { polling: true });
 const midtransClient = require('midtrans-client');
+// const { delete } = require('request');
 
 let snap = new midtransClient.Snap({
     isProduction : false,
@@ -12,7 +13,6 @@ let snap = new midtransClient.Snap({
 });
 
 let chart = [];
-
 
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
@@ -44,33 +44,69 @@ bot.on('message', (msg) => {
         `, {parse_mode : "Markdown"})
     }
     else if(message.toLowerCase().includes("keranjang")){
-
-        bot.sendMessage(chatId, `wait`, {parse_mode : "Markdown"})
-    }
+        if(chart[0] === undefined){
+            bot.sendMessage(chatId, `Tidak ada barang di keranjang.`, {parse_mode : "Markdown"})
+        }
+        const getData = async () => {
+           try {
+            return chart.map(async (el, i) => {
+                const response = await axios.get(`https://fayzisme-bot-telegram-to.glitch.me/api/product/${el}`)
+                const data = response.data.data;
+                const {name, price} = data;
+                const harga = (price) =>
+                {
+                    let rupiah = '';		
+                    let angkarev = price.toString().split('').reverse().join('');
+                    for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
+                    return 'Rp.'+rupiah.split('',rupiah.length-1).reverse().join('') + ',00';
+                }
+                return bot.sendMessage(chatId, 
+`Id : ${i + 1}
+Nama produk : ${name}
+Harga : ${harga(price)}`, {
+    "reply_markup": {
+    "inline_keyboard": [
+        [
+            {
+                text: "hapus item",
+                callback_data: name
+            },
+        ],
+    ],},parse_mode : "Markdown"});
+              });
+        }
+        catch (err) {
+            console.log(err);
+        }
+}
+        getData();
+        bot.sendMessage(chatId, `Jumlah item = ${chart.length}`, {parse_mode : "Markdown"});
+        }
 }); 
 
 bot.onText(/\/product/, async (msg) => {
     bot.sendMessage(msg.chat.id,'==============================================',
     {
     "reply_markup": {
-        "keyboard": [["Lihat Keranjang"], ["Checkout"]]
+        "keyboard": [["Lihat Keranjang"], ["Panduan"], ["Checkout"]]
         }
     });
 
     try {
     const response = await axios.get(`https://fayzisme-bot-telegram-to.glitch.me/api/product`)
     const data = response.data.data;
-    data.forEach(el => {
-            const { id, name, price } = el;
-            const harga = (price) =>
+    data.forEach(async (el, i) => {
+           const { id, name, price } = el;
+           const harga = (price) =>
             {
                 let rupiah = '';		
                 let angkarev = price.toString().split('').reverse().join('');
                 for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
                 return 'Rp.'+rupiah.split('',rupiah.length-1).reverse().join('') + ',00';
             }
-    bot.sendMessage(msg.chat.id, `Nama produk : ${name}
- Harga : ${harga(price)}`,
+    await bot.sendMessage(msg.chat.id, 
+`Nama produk : ${name}
+Harga : ${harga(price)}`,
  {
     "reply_markup": {
         "inline_keyboard": [
@@ -81,7 +117,6 @@ bot.onText(/\/product/, async (msg) => {
                 },
             ],
         ],
-        // "keyboard": [["Lihat Keranjang"], ["Checkout"]]
     }, parse_mode:"Markdown"});
         });
     } 
@@ -91,8 +126,16 @@ bot.onText(/\/product/, async (msg) => {
 });
 
 bot.on("callback_query", function onCallbackQuery(callbackData) {
-    chart.push(parseInt(callbackData.data));
-    console.log(chart);    
+    const arrText = callbackData.message.text.split("\n");
+    const id = arrText[0].replace(/[^0-9]/g, "");
+
+    if(/^\d+$/.test(parseInt(callbackData.data))){
+        chart.push(parseInt(callbackData.data));
+        console.log(chart);
+    }
+    else {
+        chart.splice(id-1, 1);
+    }
 });
 
 bot.onText(/\/order/, async (msg) => {
